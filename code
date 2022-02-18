@@ -1,0 +1,44 @@
+import requests
+import jieba
+
+url = "http://down.xsbooktxt.cc/modules/article/txtarticle.php?id=14051"
+# noinspection PyBroadException
+try:
+    r = requests.get(url) #向网页发送get请求，获取网页数据
+    r.raise_for_status()  # 如果不是200，产生异常requests.HTTPError
+    r.encoding = r.apparent_encoding #网页的解码方式
+    f = open("1.txt", "w", encoding='utf - 8') #以写的方式打开1.txt文件
+    f.write(r.text) #将网页信息写入1.txt文件
+    f.close() #关闭文件
+except Exception as e: #
+    print("爬取失败...")
+    
+try:
+    txt = open("1.txt", "r", encoding="utf-8").read() #以读的方式打开文件
+    words = jieba.lcut(txt) #利用中文分词库获取文件文本中分词
+    counts = {} #定义空字典以保存指定人名出现的次数
+    for word in words: #循环匹配获得的分词和指定的人名
+        if len(word) == 1: #当分词长度等于1时结束本次循环，进行下一次循环
+            continue
+        elif word == "叶文洁":
+            rword = "叶文洁"
+            counts[rword] = counts.get(rword, 0) + 1
+        elif word == "汪淼":
+            rword = "汪淼"
+            counts[rword] = counts.get(rword, 0) + 1
+        elif word == "史强":
+            rword = "史强"
+            counts[rword] = counts.get(rword, 0) + 1
+        elif word == "罗辑":
+            rword = "罗辑"
+            counts[rword] = counts.get(rword, 0) + 1
+        elif word == "程心":
+            rword = "程心"
+            counts[rword] = counts.get(rword, 0) + 1
+    items = list(counts.items())  # 将无序的字典类型转换为可排序的列表类型
+    items.sort(key=lambda x: x[1], reverse=True)  # 以第二列值，从大到小进行排序
+    for i in range(5): #循环输出人名和出现的次数
+        word, count = items[i]
+        print(word, count)
+except Exception as e: #
+    print("解析失败...")
